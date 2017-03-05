@@ -1,11 +1,18 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using SnappetChallenge.Repository.Implementations;
+using SnappetChallenge.Repository.Interfaces;
 
 namespace SnappetChallenge.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly DataRepository _dataRepository = new DataRepository();
+        private readonly IDataRepository _dataRepository;
+
+        public HomeController(IDataRepository dataRepository)
+        {
+            _dataRepository = dataRepository;
+        }
 
         public ActionResult Index()
         {
