@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using SnappetChallenge.Repository.Interfaces;
 
 namespace SnappetChallenge.Repository.Implementations
 {
-    public class BaseRepository
+    public class BaseRepository : IRepository
     {
     }
 }

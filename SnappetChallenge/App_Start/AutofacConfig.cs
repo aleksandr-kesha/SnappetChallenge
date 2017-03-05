@@ -1,14 +1,12 @@
 ﻿using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Core;
 using Autofac.Integration.Mvc;
 using System.Web.Mvc;
-using WebGrease.Css.Extensions;
 
 namespace SnappetChallenge
 {
-    public class AutofacConfig
+    public static class AutofacConfig
     {
         public static void ConfigureContainer()
         {
@@ -16,25 +14,21 @@ namespace SnappetChallenge
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
-            //builder.RegisterType<BookRepository>().As<IRepository>();
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var assemblyTypes = executingAssembly.DefinedTypes.ToList();
 
-            var assemblies = Assembly.GetExecutingAssembly().DefinedTypes.ToList();
+            var interfaces = assemblyTypes.Where(type => type.IsAbstract && !type.IsClass).ToList();
 
-            var implementations = assemblies.Where(ia => ia.IsClass).ToList();
-            var interfaces = assemblies.Where(ia => ia.IsInterface).ToList();
+            var dependencies = (
+                    from @interface in interfaces
+                    let @implementation =
+                    assemblyTypes.FirstOrDefault(
+                        domainType => @interface.IsAssignableFrom(domainType) && !(domainType == @interface))
+                    where @implementation != null && !@implementation.IsAbstract
+                    select new {Interface = @interface.AsType(), Implementation = @implementation.AsType()})
+                .ToList();
 
-            var dependencies =(
-                from @interface in interfaces
-                let @implementation = implementations.FirstOrDefault(domainType => @interface.IsAssignableFrom(domainType) && !(domainType == @interface))
-
-                /*
-                
-                 */
-                //.FirstOrDefault(imp => imp.ImplementedInterfaces.Select(ii => ii.Name).ToList().Contains(@interface.Name))
-                where @implementation != null && !@implementation.IsAbstract
-                select new { Interface = @interface.AsType(), Implementation = @implementation.AsType() }).ToList();
-
-            dependencies.ForEach(d => builder.RegisterType(d.Interface).As(d.Implementation));
+             dependencies.ForEach(d => builder.RegisterType(d.Interface).As(d.Implementation));
 
             var container = builder.Build();
 
