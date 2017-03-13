@@ -19,5 +19,10 @@ namespace SnappetChallenge.Models
         public string Subject { get; set; }
         public string Domain { get; set; }
         public string LearningObjective { get; set; }
+
+        public override string ToString()
+        {
+            return Subject + "; " + Domain + "; " + LearningObjective;
+        }
     }
 }

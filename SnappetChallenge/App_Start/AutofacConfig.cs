@@ -3,6 +3,8 @@ using System.Reflection;
 using Autofac;
 using Autofac.Integration.Mvc;
 using System.Web.Mvc;
+using SnappetChallenge.Repository.Implementations;
+using SnappetChallenge.Repository.Interfaces;
 
 namespace SnappetChallenge
 {
@@ -14,6 +16,7 @@ namespace SnappetChallenge
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
+            /*
             var executingAssembly = Assembly.GetExecutingAssembly();
             var assemblyTypes = executingAssembly.DefinedTypes.ToList();
 
@@ -29,6 +32,10 @@ namespace SnappetChallenge
                 .ToList();
 
              dependencies.ForEach(d => builder.RegisterType(d.Interface).As(d.Implementation));
+             */
+
+            //builder.RegisterType<DataRepository>().As<IDataRepository>();
+            builder.RegisterType(typeof(DataRepository)).As(typeof(IDataRepository));
 
             var container = builder.Build();
 

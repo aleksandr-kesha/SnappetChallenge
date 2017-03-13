@@ -3,8 +3,11 @@ using SnappetChallenge.Models;
 
 namespace SnappetChallenge.Repository.Interfaces
 {
-    public interface IDataRepository : IRepository
+    public interface IDataRepository
     {
-        List<DataModel> GetData();
+        List<DataModel> GetRawData();
+        List<ResponseModel> GetResponseData();
+
+        List<string> GetSubjects();
     }
 }

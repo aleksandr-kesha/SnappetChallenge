@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using SnappetChallenge.Repository.Implementations;
 using SnappetChallenge.Repository.Interfaces;
 
 namespace SnappetChallenge.Controllers
@@ -16,9 +15,13 @@ namespace SnappetChallenge.Controllers
 
         public ActionResult Index()
         {
-            var data = _dataRepository.GetData();
+            var data = _dataRepository.GetRawData();
 
             var nullData = data.Where(d => d.Difficulty.Contains("null") || d.Difficulty.Contains("NULL")).ToList();
+
+            var responseData = _dataRepository.GetResponseData();
+
+            var nullResponseData = responseData.Where(d => !d.Difficulty.HasValue).ToList();
 
             return View();
         }
